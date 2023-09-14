@@ -1,12 +1,19 @@
 const body = document.querySelector('body');
 
-let dimension = 0
+let dimension = null;
 function getValue() {
     dimension = prompt("please enter a value");
     container.innerHTML = '';
     createDivs();
 }
 
+function pickColor () {
+    const colors = [ '#ff0000', '#00ff00', '#0000ff',
+    '#ff3333', '#ffff00', '#ff6600', '#ff00ff','#ffff00' ];
+    var random_color = colors[(Math.floor(Math.random() * colors.length))];
+    return random_color;
+}
+ 
 const input = document.createElement('button');
 body.appendChild(input);
 input.classList.add('input');
@@ -22,41 +29,28 @@ function createDivs() {
         alert('please enter a number that is not less than one ore greater than 100');
         return;
     }
-    let rows = dimension;
-    let cols = dimension;
-
-    for (let i = 0; i < rows * cols; i++) {
+        
+    for (let i = 0; i < dimension ; i++) {
         const div = document.createElement('div');
-        const mouseTrail = document.createElement('div');
-        mouseTrail.classList.add('mouse-trail');
-        div.appendChild(mouseTrail);
+        div.classList.add('row');
+        
+        
+        for (let j = 0; j < dimension; j++) {
+            const inDiv = document.createElement('div');
+            const size = 1000 / dimension;
+            inDiv.classList.add('in-row');
+            inDiv.style.width = `${size}px`;
+            inDiv.style.height = `${size}px`;
+            inDiv.addEventListener('mouseenter', () => {
+                inDiv.style.backgroundColor = pickColor();
+            });
+            
+            div.appendChild(inDiv);
+       }
+       
+    container.appendChild(div);
 
-        let cellSizePercentage = (100 / dimension) - ( 2 *(dimension - 1) / dimension); // Calculate cell size dynamically
-        div.style.flex = `0 0 calc(${cellSizePercentage}% - 2px)`;
-
-        div.addEventListener('mousemove', (event) => {
-            const { clientX, clientY } = event;
-            const rect = container.getBoundingClientRect();
-
-            const x = clientX - rect.left;
-            const y = clientY - rect.top;
-
-            mouseTrail.style.left = `${x}px`;
-            mouseTrail.style.top = `${y}px`;
-            mouseTrail.style.opacity = 1;
-        });
-
-        div.addEventListener('mouseenter', () => {
-            div.style.backgroundColor = 'grey';
-        });
-
-        div.addEventListener('mouseout', () => {
-            div.style.backgroundColor = '';
-            mouseTrail.style.opacity = 0;
-        });
-
-        container.appendChild(div);
     }
-}
+ }
 
 body.appendChild(container);
